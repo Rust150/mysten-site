@@ -1,0 +1,20 @@
+@keyframes floatStars {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 1000px 1000px;
+  }
+}
+
+.floating-stars {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: radial-gradient(rgba(255,255,255,0.4) 1px, transparent 1px);
+  background-size: 40px 40px;
+  background-repeat: repeat;
+  animation: floatStars 120s linear infinite;
+  opacity: 0.08;
+}
