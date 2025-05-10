@@ -23,7 +23,7 @@ export default function App() {
       {/* Hero Text */}
       <div className="text-center">
         <h1 className="text-3xl font-bold">$MYSTEN - Team Mysten Labs<span>💥</span></h1>
-        <p className="text-sm mt-2">Born from chaos, coded in uptime.</p>
+        <p className="text-sm mt-2">From the Creators of Sui</p>
         <button className="mt-4 px-6 py-2 bg-yellow-400 text-black font-bold rounded hover:bg-yellow-300">
           Buy $MYSTEN Now
         </button>
