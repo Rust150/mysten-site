@@ -1,3 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Floating star animation */
 @keyframes floatStars {
   0% {
     background-position: 0 0;
@@ -12,9 +17,31 @@
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  background-image: radial-gradient(rgba(255,255,255,0.4) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(255, 255, 255, 0.4) 1px, transparent 1px);
   background-size: 40px 40px;
   background-repeat: repeat;
   animation: floatStars 120s linear infinite;
   opacity: 0.08;
+}
+
+/* Anchor scrolling fix for sticky navbar */
+:target {
+  scroll-margin-top: 100px;
+}
+
+/* Smooth scaling on hover */
+.hover-scale {
+  transition: all 0.3s ease-in-out;
+}
+.hover-scale:hover {
+  transform: scale(1.05);
+}
+
+/* Optional: make modal slightly animated */
+.modal-fade {
+  animation: fadeIn 0.2s ease-in-out;
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }

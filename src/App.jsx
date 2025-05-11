@@ -76,6 +76,64 @@ function HeroSection() {
   );
 }
 
+function TotalTransactionsDisplay() {
+  const [txCount, setTxCount] = useState(null);
+
+  useEffect(() => {
+    async function fetchTotalTransactions() {
+      try {
+        const response = await fetch('https://fullnode.mainnet.sui.io:443', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            jsonrpc: '2.0',
+            id: 1,
+            method: 'sui_getTotalTransactionBlocks',
+            params: [],
+          }),
+        });
+
+        const data = await response.json();
+        const totalTx = data?.result;
+        if (totalTx) {
+          setTxCount(Number(totalTx));
+        }
+      } catch (err) {
+        console.error('Failed to fetch total transactions:', err);
+      }
+    }
+
+    fetchTotalTransactions();
+    const interval = setInterval(fetchTotalTransactions, 10000); // refresh every 10s
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <section className="relative py-28 text-center overflow-hidden bg-[#1d81c2] text-white">
+      {txCount && (
+        <div className="absolute inset-0 flex justify-center items-center opacity-10 text-[16rem] font-extrabold text-white pointer-events-none select-none leading-none z-0">
+          {txCount.toLocaleString()}
+        </div>
+      )}
+
+      <div className="relative z-10">
+        <h2 className="text-4xl font-bangers mb-4">Billions of Bytes. Zero Downtime.</h2>
+        <p className="text-base mb-6">Mysten stays busy. Here's how much we’ve moved.</p>
+        <div className="inline-block px-8 py-4 rounded-2xl bg-white/10 backdrop-blur-md text-left text-white shadow-lg">
+          <p className="text-lg font-mono">
+            total_transactions:{' '}
+            <span className="text-green-400">
+              {txCount?.toLocaleString() ?? 'Loading...'}
+            </span>
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /* Team Section */
 function TeamSection() {
   const teams = [
@@ -110,16 +168,16 @@ function SocialLinks() {
       <h3 className="text-3xl font-bangers mb-6">Join the Community</h3>
       <div className="flex justify-center gap-8 items-center text-white text-xl">
         <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">
-          <img src="/icons/twitter.svg" alt="Twitter" className="w-8 h-8" />
+          <img src="/icons/twitter.png" alt="Twitter" className="w-8 h-8" />
         </a>
         <a href="https://t.me" target="_blank" rel="noopener noreferrer">
-          <img src="/icons/telegram.svg" alt="Telegram" className="w-8 h-8" />
+          <img src="/icons/telegram.png" alt="Telegram" className="w-8 h-8" />
         </a>
         <a href="mailto:info@mystenlabs.com">
-          <img src="/icons/email.svg" alt="Email" className="w-8 h-8" />
+          <img src="/icons/email.png" alt="Email" className="w-8 h-8" />
         </a>
         <a href="https://dexscreener.com" target="_blank" rel="noopener noreferrer">
-          <img src="/icons/dexscreener.svg" alt="Dexscreener" className="w-8 h-8" />
+          <img src="/icons/dexscreener.png" alt="Dexscreener" className="w-8 h-8" />
         </a>
       </div>
     </section>
@@ -135,50 +193,49 @@ function Footer() {
   );
 }
 
-/* TPS Display */
-function TPSDisplay({ tps }) {
-  return (
-    <section className="text-center text-white py-16">
-      <h2 className="text-2xl font-bold mb-4">100% Uptime. No Copium.</h2>
-      <p className="text-base">While other chains panic, we deploy at 3AM and then take a nap.</p>
-      <div className="mt-6 bg-black p-5 text-green-400 font-mono rounded-2xl inline-block text-left shadow-xl">
-        mainnet_status: <span className="text-white">ALWAYS ONLINE</span><br />
-        TPS: {tps.toLocaleString()}
-      </div>
-    </section>
-  );
-}
-
-/* Meme Gallery — BIGGER & BOLDER */
 function MemeGallery() {
-  const memes = [1, 2, 3, 4];
+  const memes = [1, 2, 3, 4]; // Add as many as you have
+  const [index, setIndex] = useState(0);
   const [previewSrc, setPreviewSrc] = useState(null);
 
+  const next = () => setIndex((prev) => (prev + 1) % memes.length);
+  const prev = () => setIndex((prev) => (prev - 1 + memes.length) % memes.length);
+
   return (
-    <section id="memes" className="w-full max-w-7xl mx-auto mt-20 px-4">
-      <h2 className="text-4xl font-bangers text-center mb-4">Meme Gallery</h2>
-      <p className="text-sm text-center mb-10">Catch ‘em all. Deploy ‘em all. Meme ‘em all.</p>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center">
-        {memes.map((num) => (
-          <div
-            key={num}
-            onClick={() => setPreviewSrc(`/memes/meme${num}.png`)}
-            className="cursor-pointer bg-[#1e3a5f] rounded-2xl shadow-xl p-5 hover:scale-105 transition-transform"
-          >
-            <img
-              src={`/memes/meme${num}.png`}
-              alt={`Meme ${num}`}
-              className="w-80 h-80 object-contain rounded-lg"
-              loading="lazy"
-            />
-          </div>
-        ))}
+    <section id="memes" className="w-full max-w-6xl mx-auto mt-14 px-1 text-center">
+      <h2 className="text-5xl font-bangers mb-6">Meme Gallery</h2>
+      <p className="text-sm mb-10">Catch ‘em all. Deploy ‘em all. Meme ‘em all.</p>
+
+      <div className="relative flex items-center justify-center">
+        <button
+          onClick={prev}
+          className="absolute left-0 z-10 bg-black bg-opacity-40 hover:bg-opacity-70 text-white text-3xl px-4 py-2 rounded-full"
+        >
+          ‹
+        </button>
+
+        <img
+          src={`/memes/meme${memes[index]}.png`}
+          alt={`Meme ${memes[index]}`}
+          className="w-full max-w-3xl h-auto rounded-xl object-contain cursor-pointer shadow-xl"
+          onClick={() => setPreviewSrc(`/memes/meme${memes[index]}.png`)}
+        />
+
+        <button
+          onClick={next}
+          className="absolute right-0 z-10 bg-black bg-opacity-40 hover:bg-opacity-70 text-white text-3xl px-4 py-2 rounded-full"
+        >
+          ›
+        </button>
       </div>
-      <p className="text-xs text-center mt-4 text-slate-200">More memes coming soon.</p>
       <ImageModal src={previewSrc} onClose={() => setPreviewSrc(null)} />
     </section>
   );
 }
+
+
+
+
 
 /* Sticker Gallery — Centered, Clean */
 function StickerGallery() {
@@ -259,7 +316,22 @@ function StickerGallery() {
         ))}
       </div>
 
-      <p className="text-xs text-center mt-2 text-slate-300">More stickers dropping soon.</p>
+      <div className="text-center mt-6">
+  <a
+    href="https://t.me/addstickers/MystenLabs"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="inline-block text-sm bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-md font-semibold transition"
+  >
+    View Full Sticker Set
+  </a>
+  <div className="mt-12 border-t border-white/20 w-full max-w-4xl mx-auto"></div>
+
+</div>
+
+
+<ImageModal src={previewSrc} onClose={() => setPreviewSrc(null)} />
+
       <ImageModal src={previewSrc} onClose={() => setPreviewSrc(null)} />
     </section>
   );
@@ -281,7 +353,7 @@ export default function App() {
       <HeroSection />
       <CopyContract />
       <TeamSection />
-      <TPSDisplay tps={tps} />
+      <TotalTransactionsDisplay />
       <MemeGallery />
       <StickerGallery />
       <SocialLinks />

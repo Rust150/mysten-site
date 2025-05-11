@@ -1,10 +1,14 @@
-/** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
     './index.html',
     './src/**/*.{js,jsx,ts,tsx}',
   ],
-  safelist: ['floating-stars'],
+  safelist: [
+    'floating-stars',
+    'text-[20rem]',
+    'text-[24rem]',
+    'leading-none',
+  ],
   theme: {
     extend: {
       fontFamily: {
@@ -21,11 +25,6 @@ module.exports = {
           '100%': { backgroundPosition: '1000px 1000px' },
         },
       },
-    },
-  },
-  variants: {
-    extend: {
-      animation: ['hover'],
     },
   },
   plugins: [],
